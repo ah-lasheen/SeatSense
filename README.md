@@ -1,2 +1,1 @@
-OSU navigational interface, scoped for aiding the differently-abled to navigate campus most efficiently. 
-Aids the visually, auditory, and mobility impaired.
+Real-time library occupancy tracker that uses live video streams and computer vision to detect available tables, rooms, and study spaces.
