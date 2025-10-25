@@ -47,7 +47,6 @@ const RoomReservations = () => {
                 <div className="room-info">
                   <h5>{room.name}</h5>
                 </div>
-                <button className="reserve-btn">Reserve</button>
               </div>
             ))}
           </div>
