@@ -1,6 +1,5 @@
 .room-reservations h3 {
-  color: #333;
-  margin-bottom: 1.5rem;
+  color: rgb(177, 171, 171);
   text-align: center;
   font-size: 1.3rem;
 }
@@ -20,17 +19,16 @@
   margin-bottom: 1rem;
   padding: 0.5rem;
   border-radius: 6px;
-  text-align: center;
 }
 
 .section-title.available {
-  background: #e8f5e8;
-  color: #2e7d32;
+  background: rgb(60, 60, 60);
+  color: green;
 }
 
 .section-title.unavailable {
-  background: #ffeaea;
-  color: #c62828;
+  background: rgb(60, 60, 60);
+  color: #f57c00;
 }
 
 .room-list {
@@ -47,6 +45,7 @@
   border-radius: 8px;
   border: 1px solid #e0e0e0;
   transition: all 0.2s ease;
+  gap: 2rem;
 }
 
 .room-card:hover {
@@ -55,17 +54,17 @@
 }
 
 .room-card.available {
-  background: #f8fff8;
-  border-color: #4caf50;
+  background: rgb(60, 60, 60);
+  border-color: green;
 }
 
 .room-card.unavailable {
-  background: #fff8f8;
-  border-color: #f44336;
+  background: rgb(60, 60, 60);
+  border-color: #ffb74d;
 }
 
 .room-info h5 {
-  color: #333;
+  color: rgb(177, 171, 171);
   margin-bottom: 0.25rem;
   font-size: 1rem;
 }
@@ -77,12 +76,12 @@
 }
 
 .next-available {
-  color: #ff9800 !important;
+  color: #f57c00 !important;
   font-weight: 500;
 }
 
 .reserve-btn {
-  background: #4caf50;
+  background: green;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -93,20 +92,6 @@
 }
 
 .reserve-btn:hover {
-  background: #45a049;
+  background: #006400;
 }
 
-.notify-btn {
-  background: #ff9800;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.notify-btn:hover {
-  background: #f57c00;
-}

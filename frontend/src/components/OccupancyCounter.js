@@ -10,16 +10,12 @@ const OccupancyCounter = () => {
 
   // Mock data for now - will be replaced with real API calls
   useEffect(() => {
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      setOccupancyData({
-        available: Math.floor(Math.random() * 20) + 5,
-        occupied: Math.floor(Math.random() * 15) + 10,
-        total: 30
-      });
-    }, 3000);
-
-    return () => clearInterval(interval);
+    // Set static data instead of random updates
+    setOccupancyData({
+      available: 12,
+      occupied: 18,
+      total: 30
+    });
   }, []);
 
   return (

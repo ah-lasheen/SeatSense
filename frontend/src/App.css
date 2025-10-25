@@ -4,7 +4,6 @@ body::-webkit-scrollbar {
 
 .App {
   height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -31,7 +30,7 @@ body::-webkit-scrollbar {
 }
 
 .reservations-section {
-  background: white;
+  background: rgb(60, 60, 60);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
