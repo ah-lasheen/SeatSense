@@ -1,4 +1,4 @@
-# Stride - Library Occupancy Tracker
+# SeatSense - Library Occupancy Tracker
 
 A real-time library occupancy tracker that uses computer vision to detect available study spaces and integrates with library room reservation systems.
 
