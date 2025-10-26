@@ -23,8 +23,7 @@ export default function VideoDisplay() {
       return () => {};
     } else if (MODE === "annotated") {
       // annotated frame served by backend (if you implemented /api/video/latest)
-      // const tick = () => setSrc(`${API}/api/video/latest?roomId=${ROOM}&t=${Date.now()}`);
-      const tick = () => setSrc(`${ANNOTATED_API}`);
+      const tick = () => setSrc(`${ANNOTATED_API}&t=${Date.now()}`); // 👈 cache-buster
       tick();
       const id = setInterval(tick, refreshRate);
       return () => clearInterval(id);
