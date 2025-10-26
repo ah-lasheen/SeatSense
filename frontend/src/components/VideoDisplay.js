@@ -30,7 +30,7 @@ export default function VideoDisplay() {
       // snapshot mode (Jetson-friendly)
       const tick = () => setSrc(`${SNAP}?t=${Date.now()}`);
       tick();
-      const id = setInterval(tick, 2000);
+      const id = setInterval(tick, 100);
       return () => clearInterval(id);
     }
   }, []);
