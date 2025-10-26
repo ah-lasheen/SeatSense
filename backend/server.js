@@ -71,8 +71,10 @@ io.on('connection', (socket) => {
 });
 
 // --- Boot ---
-server.listen(PORT, () =>
-  console.log(`Backend listening on http://localhost:${PORT} (CORS: ${ALLOWED_ORIGINS.join(', ')})`)
+// server.listen(PORT, () =>
+//   console.log(`Backend listening on http://localhost:${PORT} (CORS: ${ALLOWED_ORIGINS.join(', ')})`)
+// );
+server.listen(PORT, '0.0.0.0', () =>
+ console.log(`Backend listening on http://0.0.0.0:${PORT} (CORS: ${ALLOWED_ORIGINS.join(', ')})`)
 );
-
 module.exports = { app, io, server };

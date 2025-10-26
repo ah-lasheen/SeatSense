@@ -5,8 +5,10 @@ import "./VideoDisplay.css";
 const MODE  = ("annotated").toLocaleLowerCase(); //(process.env.REACT_APP_VIDEO_MODE || "annotated").toLowerCase();
 const SNAP  = process.env.REACT_APP_SNAPSHOT_URL || "http://127.0.0.1:5055/snapshot";
 const MJPEG = process.env.REACT_APP_MJPEG_URL    || "http://127.0.0.1:5055/video";
-const API   = process.env.REACT_APP_API_URL      || "http://localhost:5000";
-const ANNOTATED_API = "http://10.11.81.14:5050/api/video/latest?roomId=roomA";
+// const API   = process.env.REACT_APP_API_URL      || "http://localhost:5000";
+// const ANNOTATED_API = "http://10.11.81.14:5050/api/video/latest?roomId=roomA";
+const API = process.env.REACT_APP_API_URL || "http://10.11.81.14:5050";
+const ANNOTATED_API = `${API}/api/video/latest?roomId=roomA`;
 const ROOM  = process.env.REACT_APP_ROOM_ID      || "roomA";
 
 console.log("MODE =", MODE, "SNAP =", SNAP, "API =", API, "ROOM =", ROOM);
