@@ -1,23 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import VideoDisplay from './components/VideoDisplay';
-import OccupancyCounter from './components/OccupancyCounter';
-import RoomReservations from './components/RoomReservations';
-import Header from './components/Header';
+import Dashboard from './pages/Dashboard';
+import LiveMonitoring from './pages/LiveMonitoring';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('dashboard'); // 'dashboard' or 'live'
+
   return (
     <div className="App">
-      <Header />
-      <main className="main-content">
-        <div className="video-section">
-          <VideoDisplay />
-          <OccupancyCounter />
-        </div>
-        <div className="reservations-section">
-          <RoomReservations />
-        </div>
-      </main>
+      {currentPage === 'dashboard' ? (
+        <Dashboard onNavigateToLive={() => setCurrentPage('live')} />
+      ) : (
+        <LiveMonitoring onBack={() => setCurrentPage('dashboard')} />
+      )}
     </div>
   );
 }

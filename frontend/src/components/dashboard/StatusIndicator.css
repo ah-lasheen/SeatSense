@@ -1,0 +1,39 @@
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.status-available {
+  background-color: #22c55e;
+}
+
+.status-occupied {
+  background-color: #ef4444;
+}
+
+.status-bags {
+  background-color: #f59e0b;
+}
+
+.status-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
