@@ -1,42 +1,30 @@
+// backend/routes/occupancy.js
 const express = require('express');
 const router = express.Router();
+const store = require('../services/occupancyStore');
 
-// Mock occupancy data - will be replaced with real computer vision processing
-let occupancyData = {
-  available: 12,
-  occupied: 18,
-  total: 30,
-  lastUpdated: new Date().toISOString()
-};
-
-// Get current occupancy data
+// GET /api/occupancy -> all rooms current state
 router.get('/', (req, res) => {
-  res.json(occupancyData);
+  res.json({ rooms: store.getAll(), updatedAt: Date.now() });
 });
 
-// Update occupancy data (for testing/development)
-router.post('/', (req, res) => {
-  const { available, occupied, total } = req.body;
-  
-  if (available !== undefined && occupied !== undefined && total !== undefined) {
-    occupancyData = {
-      available,
-      occupied,
-      total,
-      lastUpdated: new Date().toISOString()
-    };
-    res.json({ message: 'Occupancy data updated', data: occupancyData });
-  } else {
-    res.status(400).json({ error: 'Missing required fields: available, occupied, total' });
-  }
-});
-
-// Get occupancy history (placeholder for future implementation)
+// GET /api/occupancy/history?roomId=roomA
 router.get('/history', (req, res) => {
-  res.json({
-    message: 'Occupancy history endpoint - to be implemented',
-    data: []
-  });
+  const { roomId } = req.query;
+  res.json({ history: store.getHistory(roomId).slice(-1000) });
+});
+
+// POST /api/occupancy  { roomId, occupied, ts?, source? }
+router.post('/', (req, res) => {
+  const io = req.app.get('io');
+  const { roomId = 'roomA', occupied, ts = Date.now(), source = 'unknown' } = req.body || {};
+  if (typeof occupied !== 'boolean') {
+    return res.status(400).json({ ok: false, error: 'occupied must be boolean' });
+  }
+  const payload = { occupied, ts, source };
+  store.set(roomId, payload);
+  io.emit('occupancy:update', { roomId, ...payload }); // realtime
+  return res.json({ ok: true });
 });
 
 module.exports = router;
