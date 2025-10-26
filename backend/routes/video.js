@@ -1,53 +1,74 @@
-// backend/routes/video.js
 const express = require('express');
+const multer  = require('multer');
+
 const router = express.Router();
 
-// In-memory latest frames by room
-// { roomId: { buf: Buffer, ts: number, mime: string } }
 const latest = new Map();
 
-// GET /api/video/status
-router.get('/status', (_req, res) => res.json({ ok: true, rooms: [...latest.keys()], ts: Date.now() }));
+// Multer for multipart/form-data uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+});
 
-// POST /api/video/frame  (multipart or base64 JSON)
-router.post('/frame', express.raw({ type: '*/*', limit: '4mb' }), (req, res) => {
-  // Accept either:
-  // 1) multipart/form-data: field "frame" (image/jpeg or image/png)
-  // 2) application/json: { roomId, image: "data:image/jpeg;base64,..." }
-  // 3) image/jpeg/png directly as body with ?roomId=roomA
+// GET /api/video/status?roomId=roomA
+router.get('/status', (req, res) => {
+  const roomId = (req.query.roomId || 'roomA').toString();
+  const entry = latest.get(roomId);
+  res.json({
+    ok: true,
+    roomId,
+    hasFrame: !!entry,
+    ts: entry?.ts ?? null,
+    mime: entry?.mime ?? null,
+  });
+});
+
+// POST /api/video/frame
+// Accepts:
+//  1) multipart/form-data with field "frame" (preferred; used by your worker)
+//  2) raw image body with Content-Type image/jpeg|image/png
+//  3) JSON data URL { image: "data:image/jpeg;base64,..." }
+router.post('/frame', upload.single('frame'), (req, res) => {
   const roomId = (req.query.roomId || req.header('x-room-id') || 'roomA').toString();
 
+  // 1) multipart path (worker sends this)
+  if (req.file) {
+    const mime = req.file.mimetype;
+    if (mime !== 'image/jpeg' && mime !== 'image/png') {
+      return res.status(415).json({ ok: false, error: 'JPEG/PNG only' });
+    }
+    latest.set(roomId, { buf: req.file.buffer, ts: Date.now(), mime });
+    req.app.get('io')?.emit('video:frame', { roomId, ts: Date.now() });
+    return res.json({ ok: true });
+  }
+
+  // 2) raw image body path
+  const ct = req.headers['content-type'] || '';
+  if (ct.startsWith('image/')) {
+    const buf = Buffer.from(req.body);
+    latest.set(roomId, { buf, ts: Date.now(), mime: ct });
+    req.app.get('io')?.emit('video:frame', { roomId, ts: Date.now() });
+    return res.json({ ok: true });
+  }
+
+  // 3) JSON data URL
   if (req.is('application/json')) {
     try {
-      const data = JSON.parse(req.body.toString());
-      const { image } = data || {};
+      const data = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const image = data?.image;
       if (!image || !image.startsWith('data:image/')) {
         return res.status(400).json({ ok: false, error: 'missing or bad data URL' });
       }
       const [meta, b64] = image.split(',', 2);
-      const mime = meta.substring(5, meta.indexOf(';')); // image/jpeg
+      const mime = meta.substring(5, meta.indexOf(';')); // e.g. image/jpeg
       const buf = Buffer.from(b64, 'base64');
       latest.set(roomId, { buf, ts: Date.now(), mime });
-      req.app.get('io').emit('video:frame', { roomId, ts: Date.now() }); // optional notify
+      req.app.get('io')?.emit('video:frame', { roomId, ts: Date.now() });
       return res.json({ ok: true });
-    } catch (e) {
+    } catch {
       return res.status(400).json({ ok: false, error: 'bad json' });
     }
-  }
-
-  // multipart/form-data or raw image
-  const ct = req.headers['content-type'] || '';
-  if (ct.startsWith('multipart/form-data')) {
-    // naive multipart parse: rely on upstream (use multer if you want)
-    return res.status(415).json({ ok: false, error: 'multipart not implemented; send JSON data URL or raw image with ?roomId=' });
-  }
-
-  // raw image body path (image/jpeg or image/png)
-  if (ct.startsWith('image/')) {
-    const buf = Buffer.from(req.body);
-    latest.set(roomId, { buf, ts: Date.now(), mime: ct });
-    req.app.get('io').emit('video:frame', { roomId, ts: Date.now() });
-    return res.json({ ok: true });
   }
 
   return res.status(400).json({ ok: false, error: 'unsupported content-type' });
@@ -57,10 +78,10 @@ router.post('/frame', express.raw({ type: '*/*', limit: '4mb' }), (req, res) => 
 router.get('/latest', (req, res) => {
   const roomId = (req.query.roomId || 'roomA').toString();
   const entry = latest.get(roomId);
-  if (!entry) return res.status(404).json({ error: 'no frame' });
+  if (!entry) return res.status(204).end(); // no frame yet
   res.set('Content-Type', entry.mime || 'image/jpeg');
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  return res.send(entry.buf);
+  res.send(entry.buf);
 });
 
 module.exports = router;
