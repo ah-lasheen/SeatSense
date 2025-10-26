@@ -8,6 +8,8 @@ const MJPEG = process.env.REACT_APP_MJPEG_URL    || "http://127.0.0.1:5055/video
 const API   = process.env.REACT_APP_API_URL      || "http://localhost:5000";
 const ROOM  = process.env.REACT_APP_ROOM_ID      || "roomA";
 
+console.log("MODE =", MODE, "SNAP =", SNAP, "API =", API, "ROOM =", ROOM);
+
 export default function VideoDisplay() {
   const [src, setSrc] = useState("");
   const [err, setErr] = useState(null);
