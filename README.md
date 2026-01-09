@@ -117,8 +117,8 @@ npm run server
 ## Technologies Used
 
 - **Frontend**: React, CSS3, Axios
-- **Backend**: Node.js, Express, Socket.io
-- **Future**: OpenCV, Machine Learning models, Database integration
+- **Backend**: Node.js, Express, Socket.io, OpenCV 
+- **Future**: Machine Learning models, Database integration
 
 ## Contributing
 
