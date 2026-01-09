@@ -96,13 +96,6 @@ npm run server
 - `POST /api/video/stop` - Stop video stream
 - `GET /api/video/analysis` - Get current frame analysis
 
-## Future Development
-
-### Computer Vision Integration
-- Implement OpenCV for real-time video processing
-- Add machine learning models for occupancy detection
-- Create video stream handling for live camera feeds
-
 ### Library API Integration
 - Connect to actual library reservation systems
 - Implement real-time room availability updates
